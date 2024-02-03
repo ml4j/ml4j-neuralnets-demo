@@ -21,6 +21,7 @@ import org.ml4j.Matrix;
 import org.ml4j.MatrixFactory;
 import org.ml4j.imaging.targets.ImageDisplay;
 import org.ml4j.jblas.JBlasRowMajorMatrixFactoryOptimised;
+import org.ml4j.nd4j.Nd4jRowMajorMatrixFactory;
 import org.ml4j.nn.ForwardPropagation;
 import org.ml4j.nn.LayeredFeedForwardNeuralNetworkContext;
 import org.ml4j.nn.activationfunctions.ActivationFunctionBaseType;
@@ -231,11 +232,17 @@ public class PretrainedKaggleCompetionClassifierDemo
     		ImageNeuronsActivationFormat.ML4J_DEFAULT_IMAGE_FORMAT, true);
   }
 
-  @Override
-  protected MatrixFactory createMatrixFactory() {
-    LOGGER.trace("Creating MatrixFactory");
-    return new JBlasRowMajorMatrixFactoryOptimised();
-  }
+    @Override
+    protected MatrixFactory createMatrixFactory() {
+        LOGGER.trace("Creating MatrixFactory");
+        boolean osx_aarch64 = (System.getProperty("os.name").indexOf("OS X") >= 0
+                && System.getProperty("os.arch").indexOf("aarch64") >= 0);
+        if (osx_aarch64) {
+            return new Nd4jRowMajorMatrixFactory();
+        } else {
+            return new JBlasRowMajorMatrixFactoryOptimised();
+        }
+    }
 
   
   

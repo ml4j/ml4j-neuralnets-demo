@@ -18,6 +18,7 @@ import org.ml4j.Matrix;
 import org.ml4j.MatrixFactory;
 import org.ml4j.imaging.targets.ImageDisplay;
 import org.ml4j.jblas.JBlasRowMajorMatrixFactory;
+import org.ml4j.jblas.JBlasRowMajorMatrixFactoryOptimised;
 import org.ml4j.nd4j.Nd4jRowMajorMatrixFactory;
 import org.ml4j.nn.FeedForwardNeuralNetworkContext;
 import org.ml4j.nn.ForwardPropagation;
@@ -134,7 +135,13 @@ public class ClassifierDemo
 	@Override
 	protected MatrixFactory createMatrixFactory() {
 		LOGGER.trace("Creating MatrixFactory");
-		return new JBlasRowMajorMatrixFactory();
+		boolean osx_aarch64 = (System.getProperty("os.name").indexOf("OS X") >= 0
+				&& System.getProperty("os.arch").indexOf("aarch64") >= 0);
+		if (osx_aarch64) {
+			return new Nd4jRowMajorMatrixFactory();
+		} else {
+			return new JBlasRowMajorMatrixFactoryOptimised();
+		}
 	}
 
 	@Override
